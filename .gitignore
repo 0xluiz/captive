@@ -85,3 +85,7 @@ migrations/
 # Ignore compiled files
 *.o
 *.py[cod]
+
+
+##CUSTOM
+config.py
