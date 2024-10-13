@@ -1,7 +1,8 @@
 from flask import render_template, request, session, redirect, jsonify, url_for
 from app import app, db
 from models import UserRequest
-from utils import send_approval_email
+from utils import send_approval_email, generate_random_password
+from radius_db import add_user_to_radius
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
 @app.route('/', methods=['GET'])
@@ -99,9 +100,12 @@ def validate_token(token):
         return None
 
 def authenticate_with_fortigate(user_request):
-    # Hardcoded credentials
-    username = 'testuser'
-    password = '@Terra1234'  # Replace with '@Terra1234' in your code
+    # Generate a unique password for the guest
+    password = generate_random_password()
+    username = user_request.email
+
+    # Add user to FreeRADIUS database
+    add_user_to_radius(username, password)
 
     # Return the rendered template
     return render_template('auth_redirect.html',

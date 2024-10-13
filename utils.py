@@ -3,6 +3,8 @@ from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
 from flask import url_for
 from models import UserRequest
+import random
+import string
 
 def generate_token(user_request):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
@@ -30,3 +32,7 @@ Deny: {denial_url}
 Thank you.
 '''
     mail.send(msg)
+
+def generate_random_password(length=8):
+    characters = string.ascii_letters + string.digits
+    return ''.join(random.choice(characters) for _ in range(length))
