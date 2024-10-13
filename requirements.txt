@@ -3,3 +3,4 @@ Flask-Mail
 Flask-SQLAlchemy
 itsdangerous
 mysql-connector-python
+gunicorn
