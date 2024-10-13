@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Approval Pending</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        // Polling interval in milliseconds
+        const POLLING_INTERVAL = 5000; // Adjust as needed
+
+        function checkApprovalStatus() {
+            fetch('/check_status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ request_id: '{{ request_id }}' })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.approved) {
+                    // Redirect to authentication page
+                    window.location.href = '/authenticate?request_id={{ request_id }}';
+                } else {
+                    // Continue polling
+                    setTimeout(checkApprovalStatus, POLLING_INTERVAL);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Start polling after the page loads
+        window.onload = function() {
+            checkApprovalStatus();
+        };
+    </script>
+</head>
+<body>
+    <h1>Your request is pending approval.</h1>
+    <p>Please wait while we contact your sponsor for approval.</p>
+</body>
+</html>

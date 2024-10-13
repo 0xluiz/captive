@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Captive Portal Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Guest Access Request</h1>
+    <form action="/submit" method="post">
+        <label for="name">Your Name:</label>
+        <input type="text" name="name" required />
+
+        <label for="email">Your Email:</label>
+        <input type="email" name="email" required />
+
+        <label for="sponsor_email">Sponsor's Email:</label>
+        <input type="email" name="sponsor_email" required />
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

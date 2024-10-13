@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Authenticating...</title>
+</head>
+<body>
+    <form id="authForm" action="{{ post_url }}" method="post">
+        <input type="hidden" name="magic" value="{{ magic }}" />
+        <input type="hidden" name="username" value="{{ username }}" />
+        <input type="hidden" name="password" value="{{ password }}" />
+    </form>
+    <p>Authenticating, please wait...</p>
+    <script>
+        document.getElementById('authForm').submit();
+    </script>
+</body>
+</html>
