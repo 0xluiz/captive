@@ -16,20 +16,19 @@ def generate_token(user_request):
 def send_approval_email(user_request):
     token = generate_token(user_request)
     approval_url = url_for('approve', token=token, _external=True)
-    denial_url = url_for('deny', token=token, _external=True)
+    #denial_url = url_for('deny', token=token, _external=True)
 
     msg = Message('Guest Access Approval Needed', recipients=[user_request.sponsor_email])
     msg.body = f'''
-Hello,
+Olá, {user_request.sponsor_email}
 
-User {user_request.name} ({user_request.email}) is requesting access.
+O visitante {user_request.name} ({user_request.email}) requisita sua autorizaçao para usar a rede de visitantes.
 
-Please approve or deny the request:
+Confirme a autorização no link a seguir:
 
-Approve: {approval_url}
-Deny: {denial_url}
+{approval_url}
 
-Thank you.
+Obrigado.
 '''
     mail.send(msg)
 

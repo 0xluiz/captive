@@ -2,11 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Page Not Found</title>
+    <title data-i18n="404.title">Page Not Found</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>404 - Page Not Found</h1>
-    <p>The page you're looking for doesn't exist.</p>
+    <h1 data-i18n="404.title">404 - Page Not Found</h1>
+    <p data-i18n="404.message">The page you're looking for doesn't exist.</p>
+    <!-- Footer Section -->
+    <div class="footer">
+        <p>
+            Powered by:
+            <a href="https://www.rbtecnologia.com" target="_blank">
+                <img src="{{ url_for('static', filename='images/developer_logo.png') }}" alt="Developer Logo" class="footer-img">
+            </a>
+        </p>
+    </div>
 </body>
 </html>

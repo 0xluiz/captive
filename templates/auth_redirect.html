@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Authenticating...</title>
+    <title data-i18n="auth_redirect.title">Authenticating...</title>
 </head>
 <body>
     <form id="authForm" action="{{ post_url }}" method="post">
@@ -10,16 +10,26 @@
         <input type="hidden" name="username" value="{{ username }}" />
         <input type="hidden" name="password" value="{{ password }}" />
     </form>
-    <p>Authenticating, please wait...</p>
+    <p data-i18n="auth_redirect.authenticating_message">Authenticating, please wait...</p>
     <script>
         document.getElementById('authForm').submit();
     </script>
     <hr>
-    <p>Your login credentials are:</p>
+    <p data-i18n="auth_redirect.credentials_title">Your login credentials are:</p>
     <ul>
-        <li><strong>Username:</strong> {{ username }}</li>
-        <li><strong>Password:</strong> {{ password }}</li>
+        <li><strong data-i18n="auth_redirect.username">Username:</strong> {{ username }}</li>
+        <li><strong data-i18n="auth_redirect.password">Password:</strong> {{ password }}</li>
     </ul>
-    <p>Please keep this information secure.</p>
+    <p data-i18n="auth_redirect.keep_secure_message">Please keep this information secure.</p>
+    <!-- Footer Section -->
+    <div class="footer">
+        <p>
+            Powered by:
+            <a href="https://www.rbtecnologia.com" target="_blank">
+                <img src="{{ url_for('static', filename='images/developer_logo.png') }}" alt="Developer Logo" class="footer-img">
+            </a>
+        </p>
+    </div>
+
 </body>
 </html>

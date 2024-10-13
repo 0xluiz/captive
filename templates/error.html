@@ -2,11 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Error</title>
+    <title data-i18n="error.title">Error</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>Error</h1>
-    <p>{{ message }}</p>
+    <h1 data-i18n="error.title">Error</h1>
+    <p data-i18n="error.message">{{ message }}</p>
+    <!-- Footer Section -->
+    <div class="footer">
+        <p>
+            Powered by:
+            <a href="https://www.rbtecnologia.com" target="_blank">
+                <img src="{{ url_for('static', filename='images/developer_logo.png') }}" alt="Developer Logo" class="footer-img">
+            </a>
+        </p>
+    </div>
+
 </body>
 </html>

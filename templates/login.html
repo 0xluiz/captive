@@ -2,38 +2,95 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Captive Portal Login</title>
+    <title data-i18n="login.guest_access_request">Guest Access Request</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <!-- Main Logo at the top -->
+
     <div class="logo-container">
         <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Main Logo" class="logo-img">
     </div>
 
-    <h1>Guest Access Request</h1>
+    <h1 id="guestAccessRequest" data-i18n="login.guest_access_request">Solicitação de Acesso de Convidado</h1>
     
     <form action="/submit" method="post">
-        <label for="name">Your Name:</label>
+        <label id="yourName" for="name" data-i18n="login.your_name">Seu Nome:</label>
         <input type="text" name="name" required />
 
-        <label for="email">Your Email:</label>
+        <label id="yourEmail" for="email" data-i18n="login.your_email">Seu Email:</label>
         <input type="email" name="email" required />
 
-        <label for="sponsor_email">Sponsor's Email:</label>
+        <label id="sponsorEmail" for="sponsor_email" data-i18n="login.sponsor_email">Email do Patrocinador:</label>
         <input type="email" name="sponsor_email" required />
 
-        <button type="submit">Submit</button>
+        <button type="submit" id="submitButton" data-i18n="login.submit">Enviar</button>
     </form>
 
-    <!-- Developer Logo and footer at the bottom -->
+    <!-- Footer Section -->
     <div class="footer">
-        <a href="https://www.rbtecnologia.com" target="_blank">
-            <img src="{{ url_for('static', filename='images/developer_logo.png') }}" alt="Developer Logo" class="footer-img">
-        </a>
         <p>
-            <a href="https://www.rbtecnologia.com" target="_blank">Powered by RB Captive - www.rbtecnologia.com</a>
+            Powered by:
+            <a href="https://www.rbtecnologia.com" target="_blank">
+                <img src="{{ url_for('static', filename='images/developer_logo.png') }}" alt="Developer Logo" class="footer-img">
+            </a>
         </p>
     </div>
+
+    <!-- Language selector in the top-right corner -->
+    <div class="language-selector">
+        <select id="language-select" onchange="changeLanguage(this.value)">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="pt-BR">Português</option>
+        </select>
+    </div>
+
+    <!-- Load i18next and backend locally from the static/js folder -->
+    <script src="{{ url_for('static', filename='js/i18next.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/i18next-http-backend.min.js') }}"></script>
+
+    <script>
+        i18next
+            .use(i18nextHttpBackend)
+            .init({
+                lng: 'en', // Set default language to English
+                fallbackLng: {
+                    'pt-BR': ['pt-BR'],
+                    'default': ['en']
+                },
+                backend: {
+                    loadPath: function(lng, namespaces) {
+                        return '/static/locales/' + lng + '.json';
+                    },
+                    crossDomain: false
+                }
+            }, function(err, t) {
+                if (err) {
+                    console.error('i18next error:', err);
+                } else {
+                    updateContent();
+                }
+            });
+
+        // Function to update content with translations
+        function updateContent() {
+            document.querySelectorAll('[data-i18n]').forEach(function(element) {
+                const key = element.getAttribute('data-i18n');
+                element.innerHTML = i18next.t(key);
+            });
+        }
+
+        // Change language dynamically
+        function changeLanguage(lng) {
+            i18next.changeLanguage(lng, function(err, t) {
+                if (!err) updateContent();
+            });
+        }
+
+        // Ensure the dropdown is set to the current language on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('language-select').value = i18next.language || 'en';
+        });
+    </script>
 </body>
 </html>

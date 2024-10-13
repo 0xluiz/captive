@@ -2,11 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Request Status</title>
+    <title data-i18n="sponsor_confirmation.request_status">Request Status</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>{{ message }}</h1>
-    <p>The guest will be notified accordingly.</p>
+    <h1 data-i18n="sponsor_confirmation.request_status">{{ message }}</h1>
+    <p data-i18n="sponsor_confirmation.notification_message">The guest will be notified accordingly.</p>
+    <!-- Footer Section -->
+    <div class="footer">
+        <p>
+            Powered by:
+            <a href="https://www.rbtecnologia.com" target="_blank">
+                <img src="{{ url_for('static', filename='images/developer_logo.png') }}" alt="Developer Logo" class="footer-img">
+            </a>
+        </p>
+    </div>
+
 </body>
 </html>

@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Approval Pending</title>
+    <title data-i18n="standby.approval_pending">Approval Pending</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script>
-        // Polling interval in milliseconds
-        const POLLING_INTERVAL = 5000; // Adjust as needed
+        const POLLING_INTERVAL = 5000;
 
         function checkApprovalStatus() {
             fetch('/check_status', {
@@ -19,24 +18,30 @@
             .then(response => response.json())
             .then(data => {
                 if (data.approved) {
-                    // Redirect to authentication page
                     window.location.href = '/authenticate?request_id={{ request_id }}';
                 } else {
-                    // Continue polling
                     setTimeout(checkApprovalStatus, POLLING_INTERVAL);
                 }
             })
             .catch(error => console.error('Error:', error));
         }
 
-        // Start polling after the page loads
         window.onload = function() {
             checkApprovalStatus();
         };
     </script>
 </head>
 <body>
-    <h1>Your request is pending approval.</h1>
-    <p>Please wait while we contact your sponsor for approval.</p>
+    <h1 data-i18n="standby.approval_pending">Your request is pending approval.</h1>
+    <p data-i18n="standby.wait_message">Please wait while we contact your sponsor for approval.</p>
+    <!-- Footer Section -->
+    <div class="footer">
+        <p>
+            Powered by:
+            <a href="https://www.rbtecnologia.com" target="_blank">
+                <img src="{{ url_for('static', filename='images/developer_logo.png') }}" alt="Developer Logo" class="footer-img">
+            </a>
+        </p>
+    </div>
 </body>
 </html>
