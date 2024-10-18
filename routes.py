@@ -1,9 +1,10 @@
-from flask import render_template, request, session, redirect, jsonify, url_for
+from flask import render_template, request, session, redirect, jsonify, url_for, flash
 from app import app, db
 from models import UserRequest
 from utils import send_approval_email, generate_random_password
 from radius_db import add_user_to_radius
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+import re
 
 @app.route('/', methods=['GET'])
 def landing_page():
@@ -13,15 +14,40 @@ def landing_page():
     session['userip'] = request.args.get('userip')
     session['user_mac'] = request.args.get('usermac')
 
-    # Render the login page
-    return render_template('login.html')
+    allowed_domains = app.config['ALLOWED_SPONSOR_DOMAINS']
+
+    # Render the login page, passing allowed_domains to the template
+    return render_template('login.html', allowed_domains=allowed_domains)
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    name = request.form['name']
-    email = request.form['email']
-    sponsor_email = request.form['sponsor_email']
+    name = request.form['name'].strip()
+    email = request.form['email'].strip()
+    sponsor_email = request.form['sponsor_email'].strip()
 
+    # Input Validation
+    if not name or not email or not sponsor_email:
+        flash('All fields are required.')
+        return redirect(url_for('landing_page'))
+
+    # Validate Email Formats
+    email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    if not re.match(email_regex, email):
+        flash('Invalid guest email address.')
+        return redirect(url_for('landing_page'))
+    if not re.match(email_regex, sponsor_email):
+        flash('Invalid sponsor email address.')
+        return redirect(url_for('landing_page'))
+
+    # Validate Sponsor Email Domain
+    allowed_domains = app.config['ALLOWED_SPONSOR_DOMAINS']
+    sponsor_domain = sponsor_email.split('@')[-1]
+    if sponsor_domain.lower() not in [domain.lower() for domain in allowed_domains]:
+        message = f"Sponsor email must be from the following domain(s): {', '.join(allowed_domains)}"
+        flash(message)
+        return redirect(url_for('landing_page'))
+
+    # Create a new UserRequest object
     user_request = UserRequest(
         name=name,
         email=email,
@@ -32,6 +58,7 @@ def submit():
         user_mac=session.get('user_mac')
     )
 
+    # Save the user request to the database
     db.session.add(user_request)
     db.session.commit()
 

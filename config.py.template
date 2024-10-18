@@ -18,3 +18,6 @@ class Config:
     RADIUS_DB_NAME = 'radius'
     RADIUS_DB_USER = 'radius'
     RADIUS_DB_PASSWORD = os.environ.get('RADIUS_DB_PASSWORD') or 'radpass'
+
+    # Allowed Sponsor Email Domains
+    ALLOWED_SPONSOR_DOMAINS = ['yourdomain.com']

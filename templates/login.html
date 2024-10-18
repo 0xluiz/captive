@@ -11,19 +11,33 @@
         <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Main Logo" class="logo-img">
     </div>
 
-    <h1 id="guestAccessRequest" data-i18n="login.guest_access_request">Solicitação de Acesso de Convidado</h1>
-    
-    <form action="/submit" method="post">
-        <label id="yourName" for="name" data-i18n="login.your_name">Seu Nome:</label>
+    <h1 id="guestAccessRequest" data-i18n="login.guest_access_request">Guest Access Request</h1>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for message in messages %}
+                    <p class="error">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('submit') }}" method="post">
+        <label id="yourName" for="name" data-i18n="login.your_name">Your Name:</label>
         <input type="text" name="name" required />
 
-        <label id="yourEmail" for="email" data-i18n="login.your_email">Seu Email:</label>
+        <label id="yourEmail" for="email" data-i18n="login.your_email">Your Email:</label>
         <input type="email" name="email" required />
 
-        <label id="sponsorEmail" for="sponsor_email" data-i18n="login.sponsor_email">Email do Patrocinador:</label>
+        <label id="sponsorEmail" for="sponsor_email" data-i18n="login.sponsor_email">Sponsor's Email:</label>
         <input type="email" name="sponsor_email" required />
 
-        <button type="submit" id="submitButton" data-i18n="login.submit">Enviar</button>
+        <!-- Instruction about sponsor email domain -->
+        <p data-i18n="login.sponsor_email_note"></p>
+
+        <button type="submit" id="submitButton" data-i18n="login.submit">Submit</button>
     </form>
 
     <!-- Footer Section -->
@@ -48,6 +62,11 @@
     <!-- Load i18next and backend locally from the static/js folder -->
     <script src="{{ url_for('static', filename='js/i18next.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/i18next-http-backend.min.js') }}"></script>
+
+    <!-- Pass allowed sponsor domains to JavaScript -->
+    <script>
+        var allowedDomains = {{ allowed_domains | tojson }};
+    </script>
 
     <script>
         i18next
@@ -76,8 +95,23 @@
         function updateContent() {
             document.querySelectorAll('[data-i18n]').forEach(function(element) {
                 const key = element.getAttribute('data-i18n');
-                element.innerHTML = i18next.t(key);
+                const optionsAttr = element.getAttribute('data-i18n-options');
+                let options = {};
+                if (optionsAttr) {
+                    try {
+                        options = JSON.parse(optionsAttr);
+                    } catch (e) {
+                        console.error('Error parsing data-i18n-options', e);
+                    }
+                }
+                element.innerHTML = i18next.t(key, options);
             });
+
+            // Update the sponsor email note with allowed domains
+            const sponsorEmailNote = document.querySelector('[data-i18n="login.sponsor_email_note"]');
+            if (sponsorEmailNote) {
+                sponsorEmailNote.innerHTML = i18next.t('login.sponsor_email_note', { allowed_domains: allowedDomains.join(', ') });
+            }
         }
 
         // Change language dynamically
